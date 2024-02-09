@@ -21,7 +21,7 @@ export const regUser = async (req, res) => {
             const sql = 'insert into users set ?'
             db.query(sql, { username: userinfo.username, password: password }, (err, result) => {
                 if (err) return res.cc()
-                if (result.affectedRows !== 1) res.cc('注册失败，请稍后再试！')
+                if (result.affectedRows !== 1) return res.cc('注册失败，请稍后再试！')
                 res.cc('注册成功', 0)
             })
         })
