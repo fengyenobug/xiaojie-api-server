@@ -1,5 +1,6 @@
 import db from '../db/index.js'
 import bcrypt from 'bcryptjs'
+import Jwt from 'jsonwebtoken'
 import * as schemaUser from '../schema/user.js'
 import { encrypto } from '../utils/aes.js'
 
@@ -33,5 +34,28 @@ export const regUser = async (req, res) => {
 
 }
 export const login = (req, res) => {
-    res.send('login OK')
+    try {
+        const userInfo = req.body
+        const sql = 'select * from users where username = ?'
+        db.query(sql, userInfo.username, (err, result) => {
+            if (err) return res.cc(err)
+            if (result.length === 1) {
+                const succ = bcrypt.compareSync(userInfo.password, result[0].password)
+                if (succ) {
+                    const tokenStr = Jwt.sign({ username: userInfo.username }, process.env.JWT_SECRET_KEY, { expiresIn: '7d' })
+                    return res.send({
+                        status: 0,
+                        message: '登陆成功！',
+                        token: tokenStr
+                    })
+                } else {
+                    return res.cc('密码错误');
+                }
+            } else {
+                res.cc('用户名不存在！')
+            }
+        })
+    } catch (error) {
+        return res.cc(error.message)
+    }
 }
