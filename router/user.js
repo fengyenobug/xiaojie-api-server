@@ -1,10 +1,7 @@
-import express from "express"
-import * as user_handler from "../router_handler/user.js"
-// 创建路由对象
+import express from "express";
+import * as user from '../router_handler/user.js'
 const router = express.Router()
-// 注册新用户
-router.post('/reguser', user_handler.regUser)
-// 登录
-router.post('/login', user_handler.login)
+// 修改密码
+router.post('/modifypassword', user.modifyPassword)
 
 export default router
