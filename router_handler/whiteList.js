@@ -48,7 +48,7 @@ export const login = (req, res) => {
           const tokenStr = Jwt.sign({ username: userInfo.username }, process.env.JWT_SECRET_KEY, { expiresIn: '7d' })
           return res.send({
             status: 200,
-            message: '登陆成功！',
+            message: '登录成功！',
             token: tokenStr
           })
         } else {
