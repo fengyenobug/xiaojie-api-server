@@ -1,5 +1,6 @@
 import db from '../db/index.js'
 import bcrypt from 'bcryptjs'
+import svgCaptcha from 'svg-captcha'
 import Jwt from 'jsonwebtoken'
 import * as schemaUser from '../schema/regSchema.js'
 import { encrypto } from '../utils/aes.js'
@@ -34,11 +35,14 @@ export const regUser = async (req, res) => {
   } catch (error) {
     return res.cc(error)
   }
-
 }
 export const login = (req, res) => {
   try {
     const userInfo = req.body
+    // console.log(req.session.captcha, userInfo.captcha);
+    if ((req.session.captcha && req.session.captcha.toLowerCase()) !== userInfo.captcha.toLowerCase()) {
+      return res.cc('验证码错误', 402)
+    }
     const sql = 'select * from users where username = ?'
     db.query(sql, userInfo.username, (err, result) => {
       if (err) return res.cc(err)
@@ -61,4 +65,20 @@ export const login = (req, res) => {
   } catch (error) {
     return res.cc(error.message)
   }
+}
+export const getSvgCaptcha = (req, res) => {
+  const cap = svgCaptcha.createMathExpr({
+    height: 30,
+    width: 120,
+    fontSize: 30,
+    noise: 2,
+    background: '#f3f3f3'
+  });
+  req.session.captcha = cap.text; // session 存储验证码数值
+  // console.log(req.session.captcha, 'cap.text');
+  res.type('svg'); // 响应的类型
+  res.send({
+    status: 200,
+    data: cap.data
+  })
 }
