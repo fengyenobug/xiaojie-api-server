@@ -29,8 +29,8 @@ app.use(session({
   resave: true,  //是指每次请求是否都重新设置session cookie
   saveUninitialized: true, // 是否保存未初始化的会话
   cookie: {
-    sameSite: 'none',
-    secure: true,
+    // sameSite: 'none',
+    // secure: true,
     httpOnly: false,
     maxAge: 1000 * 60 * 3, // 设置 session 的有效时间，单位毫秒
   },
