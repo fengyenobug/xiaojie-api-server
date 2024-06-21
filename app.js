@@ -17,7 +17,8 @@ dotenv.config()
 app.use(cors(
   {
     credentials: true, // 允许跨域带cookie
-    origin: ['http://127.0.0.1:5173', 'http://localhost:5173', 'https://yzre.cn', 'https://www.yzre.cn'],
+    // origin: ['http://127.0.0.1:5173', 'http://localhost:5173', 'https://yzre.cn', 'https://www.yzre.cn'],
+    origin: true,
   }
 ))
 app.use(logger('dev'));
@@ -47,7 +48,8 @@ app.use((req, res, next) => {
   res.cc = (err, status = 500) => {
     res.send({
       status,
-      message: err instanceof Error ? err.message : err
+      message: err instanceof Error ? err.message : err,
+      err: err
     })
   }
   next()
@@ -67,7 +69,7 @@ app.use((err, req, res, next) => {
   }
   res.send({
     status: 500,
-    message: '未知的错误',
+    err: err,
   })
 })
 app.listen(3000, () => {
